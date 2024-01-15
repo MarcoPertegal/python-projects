@@ -46,7 +46,7 @@ while True:
             #Podemos verificar si la lista palabras esta vacia o no
             #ya que si está vacia se considera como false y una no vacia
             #como true
-            #Se puede realizar incluso antes de se declarada la variable
+            #TENEMOS que declarar la lista antes
             if palabras:
                 show_words(palabras)
             else:

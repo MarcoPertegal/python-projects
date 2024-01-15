@@ -17,14 +17,20 @@ def import_words():
     return palabras
 
 def show_words():
+    contador = 0
     #usamos los pares de valores del diccionario
     #el .items es un metodo de los diccionarios y podemos extraer los elementos clave valor
+    #Los bucles for in no nos permiten recoger partes de la lista sino que toda la lista entera
     for palabra, frecuencia in palabras.items():
         #usando la f podemos imprimir variables
         #para imprimir variables que son int debemos pasarlas a str sino peta
         #como esto es poco legible se usa f-string para imprimir variables int y str al mismo tiempo
         #print(palabra+":" +str(frecuencia)+ "veces")
         print(f"{palabra}: {frecuencia} veces")
+        contador += 1
+        if (contador == 3):
+            input("Pulse una tecla para continuar")
+            contador = 0
 
 while True:
         print("1. Importar palabras clave")
