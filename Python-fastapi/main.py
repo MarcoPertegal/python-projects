@@ -10,7 +10,7 @@ app = FastAPI()
 @app.get("/")
 async def get():
     return {"message": "Hello World"}
-
+"""
 class User(BaseModel):
     id: int
     name: str 
@@ -23,4 +23,4 @@ app = FastAPI()
 
 @app.post("/items/")
 async def create_item(item: Item):
-    return item
+    return item"""
