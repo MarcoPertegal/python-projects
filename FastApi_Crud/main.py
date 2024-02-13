@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI()
 
-#Con el passwordBearer me pide una contraseña y un usuario
+# Con el passwordBearer me pide una contraseña y un usuario
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -19,7 +19,7 @@ class Tractor(BaseModel):
     peso: float
 
 
-tractor1 = Tractor(id=1, marca='John Deere', peso=3.500)
+tractor1 = Tractor(id=1, marca='John Deere', peso=3500)
 tractor2 = Tractor(id=2, marca='New Holland', peso=2600)
 
 
@@ -31,23 +31,36 @@ class EditTractorDto(BaseModel):
 
 class TractorDtoResponse(BaseModel):
     id: int
-    marca:str
+    marca: str
     peso: float
 
 
 TRACTORES = [tractor1, tractor2]
 
 
-@app.get('/tractor', response_model=List[Tractor], status_code=status.HTTP_200_OK)
-async def getAll(token: Annotated[str, Depends(oauth2_scheme)]):
-    return TRACTORES
+@app.get('/tractor', response_model=List[TractorDtoResponse], status_code=status.HTTP_200_OK)
+async def getAll():
+    tractorListDto = []
+    for tractor in TRACTORES:
+        tractorDto = TractorDtoResponse(
+            id=tractor.id,
+            marca=tractor.marca,
+            peso=tractor.peso
+        )
+        tractorListDto.append(tractorDto)
+    return tractorListDto
 
 
 @app.get('/tractor/{id}', response_model=Tractor, status_code=status.HTTP_200_OK)
 async def getById(id: int = Path(..., title='id del tractor')):
     for tractor in TRACTORES:
         if tractor.id == id:
-            return tractor
+            tractorDto = TractorDtoResponse(
+                id=tractor.id,
+                marca=tractor.marca,
+                peso=tractor.peso
+            )
+            return tractorDto
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tractor not found")
 
 
@@ -63,7 +76,8 @@ async def createTractor(newTractor: EditTractorDto = Body(..., title='nuevo trac
     )
     TRACTORES.append(created_tractor)
     return TractorDtoResponse(id=created_tractor.id, marca=created_tractor.marca, peso=created_tractor.peso)
-    #Si quiero que el dto no devuelva lo mismo que los atritutos que tiene la clase Tractor como por ejemplo el id me da error 500
+    # Si quiero que el dto no devuelva lo mismo que los atritutos que tiene la clase Tractor como por ejemplo el id me da error 500
+
 
 @app.put('/tractor', response_model=Tractor, status_code=status.HTTP_200_OK)
 async def editTractor(editedTractor: EditTractorDto = Body(..., title='Tractor editado')):
